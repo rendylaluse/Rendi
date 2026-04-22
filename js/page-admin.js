@@ -1,5 +1,5 @@
 // ============================================================
-// 🧺 RENDI LAUNDRY — Admin Page
+// 🧺 FRESH LAUNDRY — Admin Page
 // ============================================================
 
 const AdminPage = (() => {
@@ -39,7 +39,7 @@ const AdminPage = (() => {
         <div class="sidebar-header">
           <div class="sidebar-logo">🧺</div>
           <div class="sidebar-brand">
-            Rendi Laundry
+            Fresh Laundry
             <span>Admin Panel</span>
           </div>
         </div>

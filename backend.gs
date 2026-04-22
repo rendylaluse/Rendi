@@ -278,7 +278,7 @@ function initializeSheets() {
     sheet = ss.insertSheet(SHEET_PENGATURAN);
     sheet.appendRow(['key', 'value']);
     sheet.getRange(1, 1, 1, 2).setFontWeight('bold');
-    sheet.appendRow(['nama_toko', 'Rendi Laundry']);
+    sheet.appendRow(['nama_toko', 'Fresh Laundry']);
     sheet.appendRow(['alamat_toko', 'Jl. Contoh No. 123']);
     sheet.appendRow(['no_telp', '08123456789']);
     sheet.appendRow(['jam_buka', '08:00 - 21:00']);
