@@ -1,5 +1,5 @@
 // ============================================================
-// 🧺 FRESH LAUNDRY — App Initialization
+// 🧺 RENDI LAUNDRY — App Initialization
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
