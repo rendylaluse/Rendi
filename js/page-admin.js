@@ -86,6 +86,7 @@ const AdminPage = (() => {
     else if (path.includes('/admin/customers')) switchTab('customers');
     else if (path.includes('/admin/services')) switchTab('services');
     else if (path.includes('/admin/pendapatan')) switchTab('pendapatan');
+    else if (path.includes('/admin/biaya')) switchTab('biaya');
     else if (path.includes('/admin/settings')) switchTab('settings');
     else switchTab('dashboard');
   }
@@ -119,6 +120,9 @@ const AdminPage = (() => {
             </a>
             <a class="nav-item ${currentTab === 'pendapatan' ? 'active' : ''}" onclick="AdminPage.switchTab('pendapatan')" data-tab="pendapatan">
               <span class="nav-item-icon">💰</span> Pendapatan
+            </a>
+            <a class="nav-item ${currentTab === 'biaya' ? 'active' : ''}" onclick="AdminPage.switchTab('biaya')" data-tab="biaya">
+              <span class="nav-item-icon">💸</span> Biaya
             </a>
           </div>
           <div class="nav-section">
@@ -171,6 +175,7 @@ const AdminPage = (() => {
       case 'customers': renderCustomers(content); break;
       case 'services': renderServices(content); break;
       case 'pendapatan': renderPendapatan(content); break;
+      case 'biaya': renderBiaya(content); break;
       case 'settings': renderSettings(content); break;
     }
   }
@@ -285,6 +290,145 @@ const AdminPage = (() => {
     } catch (error) {
       document.getElementById('pendapatan-content').innerHTML = Components.emptyState('⚠️', 'Gagal', 'Gagal memuat data pendapatan');
     }
+  }
+
+  // ======================== BIAYA (EXPENSES) ========================
+
+  function getBiayaData() {
+    try {
+      const data = localStorage.getItem('laundry_biaya');
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveBiayaData(data) {
+    localStorage.setItem('laundry_biaya', JSON.stringify(data));
+  }
+
+  function renderBiaya(container) {
+    container.innerHTML = `
+      <div class="admin-page-header">
+        <div>
+          <h1 class="admin-page-title">Manajemen Biaya</h1>
+          <p class="admin-page-subtitle">Kelola pengeluaran operasional (Disimpan di browser)</p>
+        </div>
+        <button class="btn btn-primary" onclick="AdminPage.showAddBiaya()">+ Tambah Biaya</button>
+      </div>
+      <div id="biaya-content"></div>`;
+    
+    loadBiaya();
+  }
+
+  function loadBiaya() {
+    const el = document.getElementById('biaya-content');
+    if (!el) return;
+
+    const data = getBiayaData();
+    let total = 0;
+    data.forEach(b => total += (parseFloat(b.jumlah) || 0));
+
+    let html = `
+      <div class="stats-grid stagger-children" style="margin-bottom: var(--space-6);">
+        ${Components.statsCard('💸', Components.formatCurrency(total), 'Total Pengeluaran', 'stat-biaya-total')}
+        ${Components.statsCard('📊', data.length + ' Transaksi', 'Jumlah Catatan', 'stat-biaya-count')}
+      </div>
+      <div class="card">
+        <div class="section-header">
+          <h2 class="section-title">Riwayat Pengeluaran</h2>
+        </div>`;
+
+    if (data.length === 0) {
+      html += Components.emptyState('💸', 'Belum Ada Biaya', 'Tambahkan catatan pengeluaran baru');
+    } else {
+      html += `
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Keterangan</th>
+                <th>Jumlah</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>`;
+      
+      // Sort terbaru di atas
+      [...data].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).forEach(b => {
+        html += `
+          <tr>
+            <td style="font-size:var(--text-xs)">${Components.formatDate(b.tanggal)}</td>
+            <td style="color:var(--text-primary);font-weight:500">${b.keterangan}</td>
+            <td style="font-weight:600;color:var(--accent-warning)">${Components.formatCurrency(b.jumlah)}</td>
+            <td>
+              <div class="table-actions">
+                <button class="btn btn-ghost btn-icon" title="Hapus" onclick="AdminPage.deleteBiaya('${b.id}')">🗑️</button>
+              </div>
+            </td>
+          </tr>`;
+      });
+      html += `</tbody></table></div>`;
+    }
+
+    html += `</div>`;
+    el.innerHTML = html;
+  }
+
+  function showAddBiaya() {
+    const body = `
+      <form id="form-biaya">
+        <div class="form-group">
+          <label class="form-label">Keterangan Biaya</label>
+          <input type="text" class="form-input" id="biaya-ket" required placeholder="Contoh: Beli deterjen">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Jumlah (Rp)</label>
+          <input type="number" class="form-input" id="biaya-jumlah" required placeholder="Contoh: 50000" min="0">
+        </div>
+      </form>`;
+
+    const footer = `
+      <button class="btn btn-secondary" onclick="Components.closeModal()">Batal</button>
+      <button class="btn btn-primary" onclick="AdminPage.submitBiaya()">Simpan</button>`;
+
+    Components.showModal('Tambah Pengeluaran', body, footer);
+  }
+
+  function submitBiaya() {
+    const ket = document.getElementById('biaya-ket').value.trim();
+    const jumlah = document.getElementById('biaya-jumlah').value.trim();
+
+    if (!ket || !jumlah) {
+      Components.toast('Harap isi keterangan dan jumlah', 'warning');
+      return;
+    }
+
+    const newBiaya = {
+      id: 'B-' + Date.now(),
+      keterangan: ket,
+      jumlah: parseFloat(jumlah),
+      tanggal: new Date().toISOString()
+    };
+
+    const data = getBiayaData();
+    data.push(newBiaya);
+    saveBiayaData(data);
+
+    Components.toast('Pengeluaran berhasil dicatat', 'success');
+    Components.closeModal();
+    loadBiaya();
+  }
+
+  function deleteBiaya(id) {
+    Components.confirm('Yakin ingin menghapus catatan biaya ini?', () => {
+      let data = getBiayaData();
+      data = data.filter(b => b.id !== id);
+      saveBiayaData(data);
+      Components.toast('Catatan biaya dihapus', 'success');
+      loadBiaya();
+    });
   }
 
   // ======================== TRANSAKSI (ORDERS) ========================
@@ -1164,6 +1308,9 @@ const AdminPage = (() => {
     saveApiUrl,
     testApi,
     initSheets,
-    saveStoreSettings
+    saveStoreSettings,
+    showAddBiaya,
+    submitBiaya,
+    deleteBiaya
   };
 })();
