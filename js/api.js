@@ -1,10 +1,10 @@
 // ============================================================
-// 🧺 RENDI LAUNDRY — API Client
+// 🧺 FRESH LAUNDRY — API Client
 // ============================================================
 
 const API = (() => {
   // URL Google Apps Script Web App
-  let BASE_URL = 'https://script.google.com/macros/s/AKfycbzeDX-tmI2l251iNDzV9HSKnvWZXY56c4OT2GV2BguXuvebo3BZbuoUtMxZ0EHrUzux/exec';
+  let BASE_URL = 'https://script.google.com/macros/s/AKfycbw9dzEzboohNxRvAeQB3Zw8T-cS-yfxInsZGEsZFcr21TTPggzK8Ahac6PNmN4PhJ7I/exec';
 
   /**
    * Set the API base URL

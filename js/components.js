@@ -1,5 +1,5 @@
 // ============================================================
-// 🧺 RENDI LAUNDRY — Reusable UI Components
+// 🧺 FRESH LAUNDRY — Reusable UI Components
 // ============================================================
 
 const Components = (() => {
