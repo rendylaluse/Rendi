@@ -1,5 +1,5 @@
 // ============================================================
-// 🧺 FRESH LAUNDRY — Admin Page
+// 🧺 RENDI LAUNDRY — Admin Page
 // ============================================================
 
 const AdminPage = (() => {
@@ -9,10 +9,68 @@ const AdminPage = (() => {
     layanan: [],
     transaksi: []
   };
+  let isAuthenticated = sessionStorage.getItem('admin_auth') === 'true';
+
+  // ======================== AUTHENTICATION ========================
+
+  function renderLogin() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background-color:var(--bg-secondary);">
+        <div class="card" style="width:100%;max-width:400px;padding:var(--space-8);">
+          <div style="text-align:center;margin-bottom:var(--space-6);">
+            <div style="font-size:3rem;margin-bottom:var(--space-4);">🔒</div>
+            <h2 style="color:var(--text-primary);margin-bottom:var(--space-2);">Admin Login</h2>
+            <p style="color:var(--text-tertiary);font-size:var(--text-sm);">Masukkan username dan password untuk mengakses panel admin</p>
+          </div>
+          <form id="admin-login-form" onsubmit="event.preventDefault(); AdminPage.login();">
+            <div class="form-group">
+              <input type="text" id="admin-username" class="form-input" placeholder="Username" required style="text-align:center;margin-bottom:var(--space-4);">
+            </div>
+            <div class="form-group">
+              <input type="password" id="admin-password" class="form-input" placeholder="Password" required style="text-align:center;letter-spacing:2px;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Masuk</button>
+          </form>
+          <div style="text-align:center;margin-top:var(--space-6);">
+             <a href="#/user" style="color:var(--accent-primary);text-decoration:none;font-size:var(--text-sm);">Kembali ke Halaman User</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function login() {
+    const usr = document.getElementById('admin-username').value;
+    const pwd = document.getElementById('admin-password').value;
+    
+    // Fitur password admin panel tanpa merubah backend
+    // Username: rendirendi | Password: 1234321
+    if (usr === 'rendirendi' && pwd === '1234321') {
+      isAuthenticated = true;
+      sessionStorage.setItem('admin_auth', 'true');
+      render();
+      Components.toast('Login berhasil!', 'success');
+    } else {
+      Components.toast('Username atau password salah!', 'error');
+    }
+  }
+
+  function logout() {
+    isAuthenticated = false;
+    sessionStorage.removeItem('admin_auth');
+    render();
+    Components.toast('Logout berhasil', 'info');
+  }
 
   // ======================== MAIN RENDER ========================
 
   function render() {
+    if (!isAuthenticated) {
+      renderLogin();
+      return;
+    }
+
     const app = document.getElementById('app');
     app.innerHTML = `
       ${renderSidebar()}
@@ -39,7 +97,7 @@ const AdminPage = (() => {
         <div class="sidebar-header">
           <div class="sidebar-logo">🧺</div>
           <div class="sidebar-brand">
-            Fresh Laundry
+            Rendi Laundry
             <span>Admin Panel</span>
           </div>
         </div>
@@ -67,6 +125,9 @@ const AdminPage = (() => {
           </div>
         </nav>
         <div class="sidebar-footer">
+          <a class="nav-item" onclick="AdminPage.logout()" style="cursor:pointer; color:var(--accent-warning);">
+            <span class="nav-item-icon">🚪</span> Logout Admin
+          </a>
           <a class="nav-item" href="#/user">
             <span class="nav-item-icon">🔙</span> Halaman User
           </a>
@@ -1016,6 +1077,8 @@ const AdminPage = (() => {
   // ======================== PUBLIC API ========================
 
   return {
+    login,
+    logout,
     render,
     switchTab,
     toggleSidebar,
