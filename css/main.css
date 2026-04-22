@@ -9,13 +9,13 @@
 /* ======================== CSS CUSTOM PROPERTIES ======================== */
 :root {
   /* Colors — Background */
-  --bg-primary: #b300ff;
-  --bg-secondary: #c233ff;
-  --bg-tertiary: #d066ff;
-  --bg-glass: rgba(179, 0, 255, 0.7);
-  --bg-glass-light: rgba(194, 51, 255, 0.5);
-  --bg-glass-heavy: rgba(153, 0, 230, 0.85);
-  --bg-surface: rgba(208, 102, 255, 0.4);
+  --bg-primary: #1a0a2e;
+  --bg-secondary: #2d1250;
+  --bg-tertiary: #3d1a6e;
+  --bg-glass: rgba(61, 26, 110, 0.7);
+  --bg-glass-light: rgba(80, 30, 140, 0.5);
+  --bg-glass-heavy: rgba(26, 10, 46, 0.85);
+  --bg-surface: rgba(61, 26, 110, 0.4);
 
   /* Colors — Accent */
   --accent-primary: #00d4ff;
@@ -38,19 +38,19 @@
   --text-inverse: #0a0e27;
 
   /* Colors — Border */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-light: rgba(255, 255, 255, 0.1);
-  --border-medium: rgba(255, 255, 255, 0.15);
-  --border-accent: rgba(0, 212, 255, 0.3);
+  --border-subtle: rgba(180, 0, 255, 0.1);
+  --border-light: rgba(180, 0, 255, 0.18);
+  --border-medium: rgba(180, 0, 255, 0.25);
+  --border-accent: rgba(180, 0, 255, 0.4);
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #00d4ff, #7b61ff);
-  --gradient-primary-hover: linear-gradient(135deg, #33ddff, #9580ff);
+  --gradient-primary: linear-gradient(135deg, #b400ff, #e040fb);
+  --gradient-primary-hover: linear-gradient(135deg, #c840ff, #ea80fc);
   --gradient-success: linear-gradient(135deg, #00e676, #00b0ff);
   --gradient-danger: linear-gradient(135deg, #ff5252, #ff1744);
   --gradient-warning: linear-gradient(135deg, #ffab00, #ff6d00);
-  --gradient-bg: linear-gradient(180deg, #b300ff 0%, #b300ff 50%, #b300ff 100%);
-  --gradient-glow: radial-gradient(ellipse at 50% 0%, rgba(0, 212, 255, 0.15) 0%, transparent 60%);
+  --gradient-bg: linear-gradient(180deg, #800080 0%, #4a0e4a 30%, #2d1250 60%, #1a0a2e 100%);
+  --gradient-glow: radial-gradient(ellipse at 50% 0%, rgba(180, 0, 255, 0.25) 0%, transparent 60%);
 
   /* Typography */
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
