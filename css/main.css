@@ -9,13 +9,13 @@
 /* ======================== CSS CUSTOM PROPERTIES ======================== */
 :root {
   /* Colors — Background */
-  --bg-primary: #0a0e27;
-  --bg-secondary: #111638;
-  --bg-tertiary: #171d4a;
-  --bg-glass: rgba(17, 22, 56, 0.7);
-  --bg-glass-light: rgba(25, 32, 72, 0.5);
-  --bg-glass-heavy: rgba(10, 14, 39, 0.85);
-  --bg-surface: rgba(23, 29, 74, 0.4);
+  --bg-primary: #1f0b2e;
+  --bg-secondary: #2d1142;
+  --bg-tertiary: #3a1654;
+  --bg-glass: rgba(45, 17, 66, 0.7);
+  --bg-glass-light: rgba(58, 22, 84, 0.5);
+  --bg-glass-heavy: rgba(31, 11, 46, 0.85);
+  --bg-surface: rgba(58, 22, 84, 0.4);
 
   /* Colors — Accent */
   --accent-primary: #00d4ff;
@@ -49,7 +49,7 @@
   --gradient-success: linear-gradient(135deg, #00e676, #00b0ff);
   --gradient-danger: linear-gradient(135deg, #ff5252, #ff1744);
   --gradient-warning: linear-gradient(135deg, #ffab00, #ff6d00);
-  --gradient-bg: linear-gradient(180deg, #0a0e27 0%, #0f1535 50%, #111638 100%);
+  --gradient-bg: linear-gradient(180deg, #1f0b2e 0%, #260d37 50%, #2d1142 100%);
   --gradient-glow: radial-gradient(ellipse at 50% 0%, rgba(0, 212, 255, 0.15) 0%, transparent 60%);
 
   /* Typography */
