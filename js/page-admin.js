@@ -230,6 +230,63 @@ const AdminPage = (() => {
     }
   }
 
+  // ======================== PENDAPATAN (REVENUE) ========================
+
+  async function renderPendapatan(container) {
+    container.innerHTML = `
+      <div class="admin-page-header">
+        <div>
+          <h1 class="admin-page-title">Laporan Pendapatan</h1>
+          <p class="admin-page-subtitle">Ringkasan pendapatan dari transaksi</p>
+        </div>
+      </div>
+      <div id="pendapatan-content">
+        ${Components.skeletonTable(3)}
+      </div>`;
+
+    if (!API.isConfigured()) {
+      document.getElementById('pendapatan-content').innerHTML = Components.emptyState('⚠️', 'API Belum Dikonfigurasi', 'Setup URL Apps Script di Pengaturan');
+      return;
+    }
+
+    try {
+      if (cachedData.transaksi.length === 0) {
+        const result = await API.Transaksi.getAll();
+        if (result.success) {
+          cachedData.transaksi = result.data;
+        }
+      }
+      
+      const tx = cachedData.transaksi || [];
+      let total = 0;
+      let paid = 0;
+      
+      tx.forEach(t => {
+        const val = parseFloat(t.total_harga) || 0;
+        total += val;
+        if (t.status === 'Selesai' || t.status === 'Diambil') {
+          paid += val;
+        }
+      });
+
+      document.getElementById('pendapatan-content').innerHTML = `
+        <div class="stats-grid stagger-children" style="margin-bottom: var(--space-6);">
+          ${Components.statsCard('💰', Components.formatCurrency(total), 'Total Keseluruhan', 'stat-total')}
+          ${Components.statsCard('✅', Components.formatCurrency(paid), 'Pendapatan (Selesai/Diambil)', 'stat-paid')}
+          ${Components.statsCard('⏳', Components.formatCurrency(total - paid), 'Potensi (Antrian/Proses)', 'stat-potensi')}
+        </div>
+        <div class="card">
+           <div class="section-header">
+             <h2 class="section-title">Riwayat Transaksi</h2>
+           </div>
+           ${tx.length > 0 ? renderTransaksiTable(tx) : Components.emptyState('📋', 'Belum Ada Transaksi', '')}
+        </div>
+      `;
+    } catch (error) {
+      document.getElementById('pendapatan-content').innerHTML = Components.emptyState('⚠️', 'Gagal', 'Gagal memuat data pendapatan');
+    }
+  }
+
   // ======================== TRANSAKSI (ORDERS) ========================
 
   async function renderOrders(container) {
@@ -1076,91 +1133,6 @@ const AdminPage = (() => {
       Components.toast('Pengaturan berhasil disimpan!', 'success');
     } catch (error) {
       Components.toast('Gagal menyimpan pengaturan', 'error');
-    }
-  }
-
-  // ======================== PENDAPATAN ========================
-
-  async function renderPendapatan(container) {
-    container.innerHTML = `
-      <div class="admin-page-header">
-        <div>
-          <h1 class="admin-page-title">Laporan Pendapatan</h1>
-          <p class="admin-page-subtitle">Ringkasan pendapatan dari transaksi yang sudah Selesai & Diambil</p>
-        </div>
-      </div>
-      <div class="card" id="pendapatan-content">
-        ${Components.skeletonTable(3)}
-      </div>`;
-
-    if (!API.isConfigured()) {
-      document.getElementById('pendapatan-content').innerHTML = Components.emptyState('⚠️', 'API Belum Dikonfigurasi', 'Buka Pengaturan untuk setup URL API');
-      return;
-    }
-
-    try {
-      // Kita hitung pendapatan secara lokal di frontend
-      const result = await API.Transaksi.getAll();
-      if (result.success) {
-        const data = result.data;
-        const monthlyData = {};
-        let totalAll = 0;
-
-        data.forEach(t => {
-          if (t.status === 'Selesai' || t.status === 'Diambil') {
-            const date = new Date(t.tanggal_masuk);
-            const monthYear = date.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-            if (!monthlyData[monthYear]) {
-              monthlyData[monthYear] = 0;
-            }
-            const harga = parseFloat(t.total_harga) || 0;
-            monthlyData[monthYear] += harga;
-            totalAll += harga;
-          }
-        });
-
-        let tableHtml = `
-          <div style="margin-bottom: var(--space-6); padding: var(--space-4); background-color: var(--bg-tertiary); border-radius: var(--radius-md);">
-            <div style="font-size: var(--text-sm); color: var(--text-tertiary); margin-bottom: var(--space-1);">Total Pendapatan Keseluruhan</div>
-            <div style="font-size: 2rem; font-weight: 700; color: var(--accent-primary);">${Components.formatCurrency(totalAll)}</div>
-          </div>
-          <div class="table-container">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Bulan</th>
-                  <th>Total Pendapatan</th>
-                </tr>
-              </thead>
-              <tbody>
-        `;
-
-        const months = Object.keys(monthlyData);
-        if (months.length === 0) {
-          tableHtml += `<tr><td colspan="2" style="text-align:center; padding:var(--space-4); color:var(--text-tertiary);">Belum ada pendapatan tercatat</td></tr>`;
-        } else {
-          months.sort((a, b) => new Date('1 ' + b) - new Date('1 ' + a));
-          for (const month of months) {
-            tableHtml += `
-              <tr>
-                <td style="font-weight:500; color:var(--text-primary);">${month}</td>
-                <td style="color:var(--text-primary); font-weight:600;">${Components.formatCurrency(monthlyData[month])}</td>
-              </tr>
-            `;
-          }
-        }
-
-        tableHtml += `
-              </tbody>
-            </table>
-          </div>
-        `;
-
-        document.getElementById('pendapatan-content').innerHTML = tableHtml;
-      }
-    } catch (error) {
-      document.getElementById('pendapatan-content').innerHTML = Components.emptyState('⚠️', 'Gagal Memuat', 'Terjadi kesalahan saat memuat data pendapatan.');
-      Components.toast('Gagal memuat data pendapatan', 'error');
     }
   }
 
