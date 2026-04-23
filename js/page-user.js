@@ -13,8 +13,15 @@ const UserPage = (() => {
       <div class="user-page page active" id="page-user">
         <!-- Header -->
         <header class="user-header">
-          <div class="user-logo">🧺</div>
-          <h1 class="user-title"><span class="text-gradient">Furab Masterclean Laundry</span></h1>
+          <div class="user-logo" onclick="UserPage.changePhoto()">
+            <img src="${UserPage.getProfilePhoto()}" alt="Profile" id="user-profile-img">
+            <div class="photo-overlay">
+              <span class="cam-icon">📷</span>
+              <span>Ubah Foto</span>
+            </div>
+            <input type="file" id="photo-input-user" accept="image/*" style="display:none" onchange="UserPage.handlePhotoUpload(event)">
+          </div>
+          <h1 class="user-title"><span class="text-gradient">rendirendii</span></h1>
           <p class="user-subtitle">Cek status cucian Anda dengan mudah</p>
         </header>
 
@@ -56,7 +63,7 @@ const UserPage = (() => {
           <div class="user-footer-nav">
             <a href="#/admin">🔧 Admin Panel</a>
           </div>
-          <p>© 2026 Furab Masterclean Laundry. All rights reserved.</p>
+          <p>© 2026 rendirendii. All rights reserved.</p>
         </footer>
       </div>`;
 
@@ -176,8 +183,50 @@ const UserPage = (() => {
       </div>`;
   }
 
+  // ======================== PROFILE PHOTO ========================
+
+  const DEFAULT_PHOTO = 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#3d1a6e"/><circle cx="50" cy="38" r="18" fill="#c084fc"/><ellipse cx="50" cy="82" rx="30" ry="22" fill="#c084fc"/></svg>`);
+
+  function getProfilePhoto() {
+    return localStorage.getItem('laundry_profile_photo') || DEFAULT_PHOTO;
+  }
+
+  function changePhoto() {
+    document.getElementById('photo-input-user')?.click();
+  }
+
+  function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      Components.toast('File harus berupa gambar', 'warning');
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      Components.toast('Ukuran foto maksimal 2MB', 'warning');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      localStorage.setItem('laundry_profile_photo', dataUrl);
+      // Update all profile images on the page
+      document.querySelectorAll('#user-profile-img, #sidebar-profile-img').forEach(img => {
+        img.src = dataUrl;
+      });
+      Components.toast('Foto profil berhasil diubah!', 'success');
+    };
+    reader.readAsDataURL(file);
+  }
+
   return {
     render,
-    cekStatus
+    cekStatus,
+    getProfilePhoto,
+    changePhoto,
+    handlePhotoUpload
   };
 })();

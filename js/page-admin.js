@@ -63,48 +63,6 @@ const AdminPage = (() => {
     Components.toast('Logout berhasil', 'info');
   }
 
-  function handleProfilePhoto(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    if (!file.type.startsWith('image/')) {
-      Components.toast('File harus berupa gambar', 'warning');
-      return;
-    }
-
-    // Max 500KB for localStorage
-    if (file.size > 500 * 1024) {
-      Components.toast('Ukuran foto maksimal 500KB', 'warning');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const dataUrl = e.target.result;
-      localStorage.setItem('admin_profile_photo', dataUrl);
-
-      // Update photo live without full re-render
-      const container = document.getElementById('sidebar-profile-photo');
-      if (container) {
-        const img = container.querySelector('img');
-        if (img) {
-          img.src = dataUrl;
-        } else {
-          const span = container.querySelector('span');
-          if (span) {
-            const newImg = document.createElement('img');
-            newImg.src = dataUrl;
-            newImg.alt = 'Profile';
-            newImg.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-            span.replaceWith(newImg);
-          }
-        }
-      }
-      Components.toast('Foto profil berhasil diperbarui!', 'success');
-    };
-    reader.readAsDataURL(file);
-  }
-
   // ======================== MAIN RENDER ========================
 
   function render() {
@@ -135,31 +93,17 @@ const AdminPage = (() => {
 
   // ======================== SIDEBAR ========================
 
-  function getProfilePhoto() {
-    return localStorage.getItem('admin_profile_photo') || '';
-  }
-
   function renderSidebar() {
-    const photo = getProfilePhoto();
-    const photoContent = photo
-      ? `<img src="${photo}" alt="Profile" style="width:100%;height:100%;object-fit:cover;">`
-      : `<span style="font-size:1.2rem;color:var(--text-primary);">👤</span>`;
-
     return `
       <aside class="sidebar" id="admin-sidebar">
         <div class="sidebar-header">
-          <div class="sidebar-profile-photo" id="sidebar-profile-photo" onclick="document.getElementById('profile-photo-input').click()" title="Ubah Foto Profil">
-            ${photoContent}
-            <div class="profile-photo-overlay">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-              </svg>
-            </div>
-            <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="AdminPage.handleProfilePhoto(event)">
+          <div class="sidebar-logo" onclick="AdminPage.changePhoto()">
+            <img src="${UserPage.getProfilePhoto()}" alt="Profile" id="sidebar-profile-img">
+            <div class="photo-overlay">📷</div>
+            <input type="file" id="photo-input-admin" accept="image/*" style="display:none" onchange="AdminPage.handlePhotoUpload(event)">
           </div>
           <div class="sidebar-brand">
-            Furab Masterclean Laundry
+            rendirendii
             <span>Admin Panel</span>
           </div>
         </div>
@@ -1340,6 +1284,38 @@ const AdminPage = (() => {
     }
   }
 
+  // ======================== PROFILE PHOTO ========================
+
+  function changePhoto() {
+    document.getElementById('photo-input-admin')?.click();
+  }
+
+  function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      Components.toast('File harus berupa gambar', 'warning');
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      Components.toast('Ukuran foto maksimal 2MB', 'warning');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      localStorage.setItem('laundry_profile_photo', dataUrl);
+      document.querySelectorAll('#user-profile-img, #sidebar-profile-img').forEach(img => {
+        img.src = dataUrl;
+      });
+      Components.toast('Foto profil berhasil diubah!', 'success');
+    };
+    reader.readAsDataURL(file);
+  }
+
   // ======================== PUBLIC API ========================
 
   return {
@@ -1372,6 +1348,7 @@ const AdminPage = (() => {
     showAddBiaya,
     submitBiaya,
     deleteBiaya,
-    handleProfilePhoto
+    changePhoto,
+    handlePhotoUpload
   };
 })();
