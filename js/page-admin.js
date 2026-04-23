@@ -159,7 +159,7 @@ const AdminPage = (() => {
             <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="AdminPage.handleProfilePhoto(event)">
           </div>
           <div class="sidebar-brand">
-            rendirendii
+            Furab Masterclean Laundry
             <span>Admin Panel</span>
           </div>
         </div>

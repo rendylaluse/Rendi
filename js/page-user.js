@@ -14,7 +14,7 @@ const UserPage = (() => {
         <!-- Header -->
         <header class="user-header">
           <div class="user-logo">🧺</div>
-          <h1 class="user-title"><span class="text-gradient">rendirendii</span></h1>
+          <h1 class="user-title"><span class="text-gradient">Furab Masterclean Laundry</span></h1>
           <p class="user-subtitle">Cek status cucian Anda dengan mudah</p>
         </header>
 
@@ -56,7 +56,7 @@ const UserPage = (() => {
           <div class="user-footer-nav">
             <a href="#/admin">🔧 Admin Panel</a>
           </div>
-          <p>© 2026 rendirendii. All rights reserved.</p>
+          <p>© 2026 Furab Masterclean Laundry. All rights reserved.</p>
         </footer>
       </div>`;
 
