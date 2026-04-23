@@ -1290,7 +1290,7 @@ const AdminPage = (() => {
     document.getElementById('photo-input-admin')?.click();
   }
 
-  function handlePhotoUpload(event) {
+  async function handlePhotoUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -1299,21 +1299,31 @@ const AdminPage = (() => {
       return;
     }
 
-    if (file.size > 2 * 1024 * 1024) {
-      Components.toast('Ukuran foto maksimal 2MB', 'warning');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const dataUrl = e.target.result;
+    try {
+      Components.toast('Memproses foto...', 'info');
+      
+      // Resize image to fit in Google Sheets (max character limit)
+      const dataUrl = await Components.resizeImage(file, 150, 150, 0.7);
+      
+      // Save locally for instant feedback
       localStorage.setItem('laundry_profile_photo', dataUrl);
       document.querySelectorAll('#user-profile-img, #sidebar-profile-img').forEach(img => {
         img.src = dataUrl;
       });
-      Components.toast('Foto profil berhasil diubah!', 'success');
-    };
-    reader.readAsDataURL(file);
+
+      // Upload to backend for cross-device sync
+      if (API.isConfigured()) {
+        const result = await API.Pengaturan.update('profile_photo', dataUrl);
+        if (result.success) {
+          Components.toast('Foto profil disinkronkan ke semua perangkat!', 'success');
+        }
+      } else {
+        Components.toast('Foto disimpan lokal (API belum diatur)', 'warning');
+      }
+    } catch (error) {
+      console.error(error);
+      Components.toast('Gagal memproses foto', 'error');
+    }
   }
 
   // ======================== PUBLIC API ========================
