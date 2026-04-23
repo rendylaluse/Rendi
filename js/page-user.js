@@ -13,13 +13,8 @@ const UserPage = (() => {
       <div class="user-page page active" id="page-user">
         <!-- Header -->
         <header class="user-header">
-          <div class="user-logo" onclick="UserPage.changePhoto()">
+          <div class="user-logo">
             <img src="${UserPage.getProfilePhoto()}" alt="Profile" id="user-profile-img">
-            <div class="photo-overlay">
-              <span class="cam-icon">📷</span>
-              <span>Ubah Foto</span>
-            </div>
-            <input type="file" id="photo-input-user" accept="image/*" style="display:none" onchange="UserPage.handlePhotoUpload(event)">
           </div>
           <h1 class="user-title"><span class="text-gradient">rendirendii</span></h1>
           <p class="user-subtitle">Cek status cucian Anda dengan mudah</p>

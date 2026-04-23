@@ -22,7 +22,6 @@
   margin: 0 auto var(--space-5);
   animation: fadeInDown 0.6s ease-out;
   position: relative;
-  cursor: pointer;
 }
 
 .user-logo img {
@@ -33,36 +32,6 @@
   border: 3px solid rgba(180, 0, 255, 0.5);
   box-shadow: 0 0 20px rgba(180, 0, 255, 0.3);
   transition: all var(--transition-base);
-}
-
-.user-logo:hover img {
-  border-color: rgba(180, 0, 255, 0.8);
-  box-shadow: 0 0 30px rgba(180, 0, 255, 0.5);
-}
-
-.user-logo .photo-overlay {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 4px;
-  opacity: 0;
-  transition: opacity var(--transition-base);
-  color: #fff;
-  font-size: var(--text-xs);
-  font-weight: 500;
-}
-
-.user-logo:hover .photo-overlay {
-  opacity: 1;
-}
-
-.user-logo .photo-overlay .cam-icon {
-  font-size: 1.5rem;
 }
 
 .user-title {
