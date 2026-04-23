@@ -103,7 +103,7 @@ const AdminPage = (() => {
             <input type="file" id="photo-input-admin" accept="image/*" style="display:none" onchange="AdminPage.handlePhotoUpload(event)">
           </div>
           <div class="sidebar-brand">
-            rendirendii
+            Furab Fast Laundreyy
             <span>Admin Panel</span>
           </div>
         </div>
